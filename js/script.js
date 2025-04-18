@@ -203,11 +203,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Form submission
+    // Form submission with cooldown
     const contactForm = document.getElementById('contactForm');
+    // Create a variable to track the last submission time
+    let lastSubmissionTime = 0;
+    const cooldownPeriod = 60000; // 60 seconds (1 minute) in milliseconds
+
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Get current time
+            const currentTime = new Date().getTime();
+
+            // Check if cooldown period has passed
+            if (currentTime - lastSubmissionTime < cooldownPeriod) {
+                // Calculate remaining cooldown time in seconds
+                const remainingTime = Math.ceil((cooldownPeriod - (currentTime - lastSubmissionTime)) / 1000);
+
+                // Show cooldown notification
+                const cooldownNotification = document.createElement('div');
+                cooldownNotification.className = 'notification-popup error';
+                cooldownNotification.innerHTML = `
+                    <div class="notification-close"><i class="fas fa-times"></i></div>
+                    <div class="notification-title">Please Wait</div>
+                    <p class="notification-message">You can send another message in ${remainingTime} seconds. This helps us prevent spam.</p>
+                `;
+
+                // Add to the DOM
+                document.body.appendChild(cooldownNotification);
+
+                // Add close functionality
+                const closeBtn = cooldownNotification.querySelector('.notification-close');
+                closeBtn.addEventListener('click', function() {
+                    cooldownNotification.classList.remove('show');
+                    setTimeout(() => {
+                        cooldownNotification.remove();
+                    }, 500);
+                });
+
+                // Show the notification with a slight delay
+                setTimeout(() => {
+                    cooldownNotification.classList.add('show');
+                }, 100);
+
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    cooldownNotification.classList.remove('show');
+                    setTimeout(() => {
+                        cooldownNotification.remove();
+                    }, 500);
+                }, 5000);
+
+                return; // Exit the function early
+            }
 
             // Get form values
             const name = document.getElementById('name').value;
@@ -218,42 +267,88 @@ document.addEventListener('DOMContentLoaded', function() {
             // Log form submission to console
             console.log('Form submitted:', { name, email, subject, message });
 
-            // Create and show notification popup
-            const notification = document.createElement('div');
-            notification.className = 'notification-popup';
-            notification.innerHTML = `
-                <div class="notification-close"><i class="fas fa-times"></i></div>
-                <div class="notification-title">Message Sent!</div>
-                <p class="notification-message">Thank you for your message! Your inquiry has been sent to our team and we will get back to you within 24 hours.</p>
-            `;
+            // Try to send to Discord if the function exists
+            let discordSuccess = true;
+            if (typeof window.sendToDiscord === 'function') {
+                discordSuccess = await window.sendToDiscord(name, email, subject, message);
+            }
 
-            // Add to the DOM
-            document.body.appendChild(notification);
+            // Update last submission time only if the message was sent successfully
+            if (discordSuccess) {
+                lastSubmissionTime = currentTime;
 
-            // Add close functionality
-            const closeBtn = notification.querySelector('.notification-close');
-            closeBtn.addEventListener('click', function() {
-                notification.classList.remove('show');
+                // Create and show notification popup
+                const notification = document.createElement('div');
+                notification.className = 'notification-popup';
+                notification.innerHTML = `
+                    <div class="notification-close"><i class="fas fa-times"></i></div>
+                    <div class="notification-title">Message Sent!</div>
+                    <p class="notification-message">Thank you for your message! Your inquiry has been sent to our team and we will get back to you within 24 hours.</p>
+                `;
+
+                // Add to the DOM
+                document.body.appendChild(notification);
+
+                // Add close functionality
+                const closeBtn = notification.querySelector('.notification-close');
+                closeBtn.addEventListener('click', function() {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 500);
+                });
+
+                // Show the notification with a slight delay
                 setTimeout(() => {
-                    notification.remove();
-                }, 500);
-            });
+                    notification.classList.add('show');
+                }, 100);
 
-            // Show the notification with a slight delay
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 100);
-
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
+                // Auto-hide after 5 seconds
                 setTimeout(() => {
-                    notification.remove();
-                }, 500);
-            }, 5000);
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 500);
+                }, 5000);
 
-            // Reset form
-            contactForm.reset();
+                // Reset form
+                contactForm.reset();
+            } else {
+                // Show error notification if Discord send failed
+                const errorNotification = document.createElement('div');
+                errorNotification.className = 'notification-popup error';
+                errorNotification.innerHTML = `
+                    <div class="notification-close"><i class="fas fa-times"></i></div>
+                    <div class="notification-title">Error!</div>
+                    <p class="notification-message">There was a problem sending your message. Please try again later or contact us directly.</p>
+                `;
+
+                // Add to the DOM
+                document.body.appendChild(errorNotification);
+
+                // Add close functionality
+                const closeBtn = errorNotification.querySelector('.notification-close');
+                closeBtn.addEventListener('click', function() {
+                    errorNotification.classList.remove('show');
+                    setTimeout(() => {
+                        errorNotification.remove();
+                    }, 500);
+                });
+
+                // Show the notification with a slight delay
+                setTimeout(() => {
+                    errorNotification.classList.add('show');
+                }, 100);
+
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    errorNotification.classList.remove('show');
+                    setTimeout(() => {
+                        errorNotification.remove();
+                    }, 500);
+                }, 5000);
+            }
+        });
     }
 
     // Animation on scroll
@@ -304,6 +399,11 @@ document.addEventListener('DOMContentLoaded', function() {
             transform: translateX(400px);
             opacity: 0;
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .notification-popup.error {
+            background-color: rgba(220, 53, 69, 0.95);
+            border-left: 4px solid #721c24;
         }
 
         .notification-popup.show {
