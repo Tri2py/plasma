@@ -205,21 +205,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form submission with cooldown
     const contactForm = document.getElementById('contactForm');
-    // Create a variable to track the last submission time
-    let lastSubmissionTime = 0;
-    const cooldownPeriod = 60000; // 60 seconds (1 minute) in milliseconds
+    // Create a variable to track the last submission time - make it global so other scripts can access it
+    window.lastSubmissionTime = 0;
+    window.cooldownPeriod = 60000; // 60 seconds (1 minute) in milliseconds
+    window.isSubmitting = false; // Flag to prevent multiple submissions
 
     if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
+        // Remove any existing event listeners by cloning and replacing the form
+        const newForm = contactForm.cloneNode(true);
+        contactForm.parentNode.replaceChild(newForm, contactForm);
+
+        // Get the new form reference
+        const updatedForm = document.getElementById('contactForm');
+
+        // Add our event listener to the clean form
+        updatedForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Prevent multiple submissions
+            if (window.isSubmitting) {
+                console.log('Already submitting, ignoring duplicate submission');
+                return;
+            }
 
             // Get current time
             const currentTime = new Date().getTime();
 
             // Check if cooldown period has passed
-            if (currentTime - lastSubmissionTime < cooldownPeriod) {
+            if (currentTime - window.lastSubmissionTime < window.cooldownPeriod) {
                 // Calculate remaining cooldown time in seconds
-                const remainingTime = Math.ceil((cooldownPeriod - (currentTime - lastSubmissionTime)) / 1000);
+                const remainingTime = Math.ceil((window.cooldownPeriod - (currentTime - window.lastSubmissionTime)) / 1000);
 
                 // Show cooldown notification
                 const cooldownNotification = document.createElement('div');
@@ -267,6 +282,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Log form submission to console
             console.log('Form submitted:', { name, email, subject, message });
 
+            // Set the submitting flag
+            window.isSubmitting = true;
+
             // Try to send to Discord if the function exists
             let discordSuccess = true;
             if (typeof window.sendToDiscord === 'function') {
@@ -275,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Update last submission time only if the message was sent successfully
             if (discordSuccess) {
-                lastSubmissionTime = currentTime;
+                window.lastSubmissionTime = currentTime;
 
                 // Create and show notification popup
                 const notification = document.createElement('div');
@@ -312,7 +330,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 5000);
 
                 // Reset form
-                contactForm.reset();
+                updatedForm.reset();
+
+                // Reset submitting flag after a short delay
+                setTimeout(() => {
+                    window.isSubmitting = false;
+                }, 500);
             } else {
                 // Show error notification if Discord send failed
                 const errorNotification = document.createElement('div');
@@ -347,6 +370,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         errorNotification.remove();
                     }, 500);
                 }, 5000);
+
+                // Reset submitting flag after a short delay
+                setTimeout(() => {
+                    window.isSubmitting = false;
+                }, 500);
             }
         });
     }
