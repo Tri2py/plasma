@@ -1,0 +1,57 @@
+/* Mobile Header Styles */
+
+/* Base header styles */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: transparent;
+    transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+    will-change: transform, opacity, background-color;
+}
+
+/* Style for header with background color applied via JS */
+header[style*="background-color: rgba(7, 19, 142, 0.9)"] {
+    background-color: rgba(7, 19, 142, 0.9) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+    /* Override any existing transitions to ensure our JS controls work */
+    header {
+        transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease !important;
+    }
+
+    /* Logo styles */
+    .logo-img {
+        transition: opacity 0.3s ease;
+    }
+
+    /* When header is hidden (controlled by JS) */
+    header[style*="translateY(-100%)"] .logo-img {
+        opacity: 0;
+    }
+
+    /* When header is visible (controlled by JS) */
+    header[style*="translateY(0)"] .logo-img {
+        opacity: 1;
+    }
+
+    /* Ensure menu toggle is visible */
+    .menu-toggle {
+        transition: opacity 0.3s ease;
+    }
+
+    /* When header is hidden */
+    header[style*="translateY(-100%)"] .menu-toggle {
+        opacity: 0;
+    }
+
+    /* When header is visible */
+    header[style*="translateY(0)"] .menu-toggle {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Integration Instructions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #5865F2;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .step {
+            margin-bottom: 30px;
+        }
+        .note {
+            background-color: #fffde7;
+            padding: 10px;
+            border-left: 4px solid #ffd600;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Discord Webhook Integration Instructions</h1>
+    
+    <div class="step">
+        <h2>Step 1: Create a Discord Webhook</h2>
+        <ol>
+            <li>Open Discord and go to the server where you want to receive messages</li>
+            <li>Select the channel you want to use (or create a new one like "website-messages")</li>
+            <li>Right-click on the channel and select "Edit Channel"</li>
+            <li>Go to "Integrations"</li>
+            <li>Click on "Webhooks" and then "New Webhook"</li>
+            <li>Give it a name (e.g., "Website Contact Form")</li>
+            <li>Click "Copy Webhook URL" to copy the webhook URL</li>
+            <li>Click "Save" to create the webhook</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h2>Step 2: Update the Discord Webhook Script</h2>
+        <ol>
+            <li>Open the file <code>js/discord-webhook.js</code> in your code editor</li>
+            <li>Find the line: <code>const DISCORD_WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL_HERE';</code></li>
+            <li>Replace <code>'YOUR_DISCORD_WEBHOOK_URL_HERE'</code> with the webhook URL you copied from Discord</li>
+            <li>Save the file</li>
+        </ol>
+    </div>
+    
+    <div class="step">
+        <h2>Step 3: Add the Script to Your Website</h2>
+        <p>Add the following line to your <code>index.html</code> file, just before the closing <code>&lt;/body&gt;</code> tag:</p>
+        <pre>&lt;script src="js/discord-webhook.js"&gt;&lt;/script&gt;</pre>
+    </div>
+    
+    <div class="note">
+        <h3>Note:</h3>
+        <p>This integration works by sending form submissions directly to Discord without storing them anywhere else. Make sure to check your Discord channel regularly for new messages.</p>
+        <p>For security reasons, never share your webhook URL publicly as anyone with this URL can send messages to your Discord channel.</p>
+    </div>
+    
+    <div class="step">
+        <h2>Testing</h2>
+        <p>After setting up the integration:</p>
+        <ol>
+            <li>Go to your website</li>
+            <li>Fill out and submit the contact form</li>
+            <li>Check your Discord channel to see if the message appears</li>
+        </ol>
+    </div>
+</body>
+</html>

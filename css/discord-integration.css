@@ -1,0 +1,57 @@
+/* Discord Integration Styles */
+
+/* Error notification styling */
+.notification-popup.error {
+    background-color: #f44336;
+    border-left: 4px solid #b71c1c;
+}
+
+.notification-popup.error .notification-title {
+    color: #fff;
+}
+
+.notification-popup.error .notification-message {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Add this to your existing notification styles if not already present */
+.notification-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-width: 350px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    border-left: 4px solid #2E7D32;
+}
+
+.notification-popup.show {
+    transform: translateX(0);
+}
+
+.notification-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.notification-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+.notification-message {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}

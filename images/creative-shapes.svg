@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Creative Shapes</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#272FCE" offset="0%"></stop>
+            <stop stop-color="#07138E" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="0%" x2="0%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#272FCE" offset="0%"></stop>
+            <stop stop-color="#07138E" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle fill="url(#linearGradient-1)" opacity="0.6" cx="150" cy="100" r="80"></circle>
+        <circle fill="url(#linearGradient-2)" opacity="0.4" cx="650" cy="500" r="120"></circle>
+        <polygon fill="#272FCE" opacity="0.3" points="400,50 450,150 350,150"></polygon>
+        <rect fill="#07138E" opacity="0.5" x="500" y="100" width="100" height="100" rx="20"></rect>
+        <rect fill="#272FCE" opacity="0.3" x="100" y="400" width="150" height="150" rx="30"></rect>
+        <polygon fill="#07138E" opacity="0.4" points="600,300 700,350 650,450 550,400"></polygon>
+    </g>
+</svg>
